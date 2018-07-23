@@ -15,7 +15,7 @@ public class ObjectDestroyer : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (transform.position.x < (playerTransform.position.x-10))
+        if (this.transform.position.x < (playerTransform.position.x-30))
         {            
             Destroy(gameObject);
         }
@@ -23,7 +23,7 @@ public class ObjectDestroyer : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        
+        Debug.Log("Sucka");
         if (collision.gameObject.CompareTag("Player"))
         {
             player.isDead = true;
