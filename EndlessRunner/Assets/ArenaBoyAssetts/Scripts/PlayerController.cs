@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     // Gravity Variables
     public float fallMultiplier = 2.5f;
-   
+
 
 
 
@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     //Jumping Attributes
     public float maxJumpTime;
     public float currentGravity;
-   
+
 
     //lerperators
     float lerpTime = 1f;
@@ -38,8 +38,8 @@ public class PlayerController : MonoBehaviour
     // GroundCheckers
     bool grounded;
     bool wasGrounded = false;
-   public Transform groundCheck;
-   public  Transform ceilingCheck;
+    public Transform groundCheck;
+    public Transform ceilingCheck;
     float groundRadius = 0.1f;
     float ceilingRadius = 0.1f;
 
@@ -66,8 +66,8 @@ public class PlayerController : MonoBehaviour
         myAnimator = GetComponent<Animator>();
         maxSpeed = playerSpeed;
         maxJumpTime = 1;
-        
-      
+
+
 
 
 
@@ -75,74 +75,82 @@ public class PlayerController : MonoBehaviour
 
     public void Update()
     {
-        if (!isDead) {
+        if (!isDead && myAnimator.GetBool("isSleeping") == false)
+        {
             rb.velocity = new Vector2(playerSpeed, rb.velocity.y);
             // BetterJump();
 
             AntiGravJump();
             Slide();
             AnimationControll();
-        }else if (isDead)
+
+
+        }
+        else if (isDead)
         {
-            rb.velocity = new Vector2(0,0);
+            rb.velocity = new Vector2(0, 0);
             rb.gravityScale = 0;
             myAnimator.SetBool("isDead", true);
 
         }
-        
+        else if (myAnimator.GetBool("isSleeping") == true)
+        {
+            WakeUp();
+        }
+
     }
 
     public void FixedUpdate()
     {
         grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround);
-      //  Debug.Log(grounded);
+        //  Debug.Log(grounded);
     }
 
 
 
     public void AntiGravJump()
     {
-            //Innitial jumpVelocity 
-            if (Input.GetKeyDown(KeyCode.W)&&rb.velocity.y==0)
+        //Innitial jumpVelocity 
+        if (Input.GetKeyDown(KeyCode.W) && rb.velocity.y == 0)
+        {
+            currentLerpTime = 0;
+            rb.velocity = new Vector2(playerSpeed, 1 * jumpVelocity);
+
+        }
+
+
+        // Gravity modifiers to float a little longer
+        if (Input.GetKey(KeyCode.W))
+        {
+
+            if (currentLerpTime < maxJumpTime)
             {
-                currentLerpTime = 0;
-                rb.velocity = new Vector2(playerSpeed, 1 * jumpVelocity);
+                currentLerpTime += Time.deltaTime;
 
             }
-
-
-            // Gravity modifiers to float a little longer
-            if (Input.GetKey(KeyCode.W))
+            else
             {
-
-                if (currentLerpTime < maxJumpTime)
-                {
-                    currentLerpTime += Time.deltaTime;
-
-                }
-                else
-                {
-                    currentLerpTime = maxJumpTime;
-                }
-
-                // Lerp vom 0 -1 Gravity 
-                float t = currentLerpTime / maxJumpTime;
-                t = Mathf.Sin(t * Mathf.PI * 0.5f);
-
-
-                currentGravity = Mathf.Lerp(0, 3, t);
-                rb.gravityScale = currentGravity;
-
+                currentLerpTime = maxJumpTime;
             }
 
-            // Gravity increase for better fall
+            // Lerp vom 0 -1 Gravity 
+            float t = currentLerpTime / maxJumpTime;
+            t = Mathf.Sin(t * Mathf.PI * 0.5f);
 
-            if (Input.GetKeyUp(KeyCode.W))
-            {
-                rb.gravityScale = fallMultiplier;
 
-            }
-        
+            currentGravity = Mathf.Lerp(0, 3, t);
+            rb.gravityScale = currentGravity;
+
+        }
+
+        // Gravity increase for better fall
+
+        if (Input.GetKeyUp(KeyCode.W))
+        {
+            rb.gravityScale = fallMultiplier;
+
+        }
+
     }
 
 
@@ -154,14 +162,14 @@ public class PlayerController : MonoBehaviour
         {
             myAnimator.SetBool("isJumping", true);
         }
-        if (rb.velocity.y < -1 )
+        if (rb.velocity.y < -1)
         {
 
         }
         if (rb.velocity.y == 0 && myAnimator.GetBool("Sliding") == false)
         {
             myAnimator.SetBool("isJumping", false);
-            playerSpeed+=0.001f;
+            playerSpeed += 0.001f;
         }
     }
 
@@ -185,7 +193,18 @@ public class PlayerController : MonoBehaviour
     {
         // hier kommen die todesanimationen rein!
     }
-   
+
+    //--------------------ButtonsFürDenSpieler---------------///
+
+    public void WakeUp()
+    {
+        if (Input.GetKey(KeyCode.D))
+            {
+            Debug.Log("lauf fotze Lauf!");
+            myAnimator.SetBool("isSleeping", false);
+        }
+    }
+
 }
     
 
