@@ -14,20 +14,15 @@ public class DistanceCount : MonoBehaviour {
    
 	// Use this for initialization
 	void Start () {
-        resetCount();
-	}
-
-    public void resetCount()
-    {
         playerTransform = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         startPosition = playerTransform.position.x;
         score = GetComponent<Text>();
-
+        
         distanceRun = 0;
-    }
-
-    // Update is called once per frame
-    void Update () {
+	}
+	
+	// Update is called once per frame
+	void Update () {
         currentPlayerPosition = playerTransform.position.x;
         distanceRun = startPosition - currentPlayerPosition;
         score.text= Mathf.Round(Mathf.Abs(distanceRun)).ToString();

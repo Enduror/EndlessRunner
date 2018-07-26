@@ -9,7 +9,7 @@ public class ObjectDestroyer : MonoBehaviour {
     
 	// Use this for initialization
 	void Start () {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        player = FindObjectOfType<PlayerController>();
         playerTransform = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
 	}
 	
@@ -22,11 +22,12 @@ public class ObjectDestroyer : MonoBehaviour {
 	}
 
     private void OnTriggerEnter2D(Collider2D collision)
-    {        
+    {
+        Debug.Log("Sucka");
         if (collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Hit Object");
-            collision.gameObject.GetComponent<PlayerController>().isDead = true;
+            player.isDead = true;
+           
             
         }
     }

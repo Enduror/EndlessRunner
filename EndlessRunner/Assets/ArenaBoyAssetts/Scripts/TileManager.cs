@@ -11,52 +11,28 @@ public class TileManager : MonoBehaviour {
 
     private Vector2 StartStreet;
 
-    GlobalData globalData;
 
     private float spawnX = 0.0f;
     private float tileLenght = 1;
     private int amountTilesOnScreen =20;
 
-    private void Awake()
-    {
-        globalData = GameObject.FindWithTag("GlobalData").GetComponent<GlobalData>();
-    }
+  
 
-    // Use this for initialization
-    void Start () {
-        playerTransform = globalData.arenaBoy1.transform;
-        createFirstTiles();
-	}
+	// Use this for initialization
+	void Start () {       
+        activeTiles = new List<GameObject>();       
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+       
 
-    public void createFirstTiles()
-    {
-        activeTiles = new List<GameObject>();
-
-        for (int i = 0; i < 20; i++)
-        {
-            SpawnTile();
-        }
-
-    }
-
-     public void deleteAllTiles()
-    {
-        spawnX = 0.0f;
-        foreach (GameObject tile in activeTiles)
+        for(int i=0; i<20; i++)
         {           
-            Destroy(tile);
+            SpawnTile();           
         }
-    }
-
-    public void changeArenaBoy(Transform t)
-    {
-        playerTransform = t;
-        deleteAllTiles();
-        createFirstTiles();
-    }
+        
+	}
 	
 	// Update is called once per frame
-	void Update () {    
+	void Update () {        
 		if(playerTransform.position.x  > (spawnX - amountTilesOnScreen * tileLenght)){
             SpawnTile();
             DeleteTile();
@@ -65,22 +41,12 @@ public class TileManager : MonoBehaviour {
 
     public void SpawnTile()
     {
-        //Depending on which level is instantiated
-        int zOffset;
 
-        if (globalData.firstOrSecond == 0)
-        {
-            zOffset = 0;
-        }
-        else
-        {
-            zOffset = 230;
-        }
         // spawns a TIle
         GameObject go;        
         go = Instantiate(tilePrefabs[0]) as GameObject;      
         go.transform.SetParent(transform);        
-        go.transform.position = new Vector3(-5,-3.9f, -zOffset) + new Vector3(1,0)* spawnX;
+        go.transform.position = new Vector2(-5,-3.9f) + new Vector2(1,0)* spawnX;
         spawnX += tileLenght;
         activeTiles.Add(go);
 

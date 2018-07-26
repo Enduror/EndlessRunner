@@ -6,9 +6,6 @@ TagManager:
   tags:
   - Level
   - Ground
-  - Camera_off
-  - deadPlayer
-  - GlobalData
   layers:
   - Default
   - TransparentFX
