@@ -27,8 +27,7 @@ public class ObjectDestroyer : MonoBehaviour {
         if (collision.gameObject.CompareTag("Player"))
         {
             player.isDead = true;
-           
-            
+            //Hier vorher ein Screenshot + Kamerafahrt
         }
     }
     

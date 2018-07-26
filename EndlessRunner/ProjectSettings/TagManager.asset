@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Level
   - Ground
+  - Button_Restart
+  - Button_Quit
   layers:
   - Default
   - TransparentFX

@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
     public float maxSpeed;
     public float slideSpeed;
 
-
+    Vector3 spawnPosition;
 
 
     public float lastDistance;
@@ -45,15 +45,13 @@ public class PlayerController : MonoBehaviour
 
     // Components
     private Collider2D playerCollider;
-    private Animator myAnimator;
+    public Animator myAnimator;
     public Rigidbody2D rb;
 
     public bool isDead;
 
     [SerializeField] LayerMask whatIsGround;
-
-
-
+    
     //test
     public float lastTimeGrounded;
 
@@ -64,13 +62,21 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
         myAnimator = GetComponent<Animator>();
+        spawnPosition = transform.position;
+    }
+
+    private void Start()
+    {
+        setStartValues();
+    }
+
+    public void setStartValues()
+    {
+        rb.gravityScale = 1;
         maxSpeed = playerSpeed;
         maxJumpTime = 1;
-
-
-
-
-
+        transform.position = spawnPosition;
+        myAnimator.SetBool("isDead", false);
     }
 
     public void Update()
@@ -88,10 +94,8 @@ public class PlayerController : MonoBehaviour
         }
         else if (isDead)
         {
-            rb.velocity = new Vector2(0, 0);
-            rb.gravityScale = 0;
-            myAnimator.SetBool("isDead", true);
-
+            Die();
+            this.enabled = false;
         }
         else if (myAnimator.GetBool("isSleeping") == true)
         {
@@ -106,7 +110,23 @@ public class PlayerController : MonoBehaviour
         //  Debug.Log(grounded);
     }
 
+    public void Die()
+    {
+        rb.velocity = new Vector2(0, 0);
+        rb.gravityScale = 0;
+        //myAnimator.SetBool("isDead", true);
+        //myAnimator.SetBool("isDead", false);
+        Debug.Log("zwischen den beiden isDead das Foto machen und animation abwarten");
+        ResetPlayer();
+        GlobalData.Instance.button_restart.SetActive(true);
+        GlobalData.Instance.button_quit.SetActive(true);    
+    }
 
+    public void ResetPlayer()
+    {
+        setStartValues();
+        myAnimator.SetBool("isSleeping", true);
+    }
 
     public void AntiGravJump()
     {
