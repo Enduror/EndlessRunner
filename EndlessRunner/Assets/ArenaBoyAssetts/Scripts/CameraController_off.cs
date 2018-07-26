@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Camera for the menu view, to save the view when the player dies
-public class CameraController : MonoBehaviour {
+public class CameraController_off : MonoBehaviour {
     public PlayerController player;
     private Vector3 lastPlayerPosition;
     private float distanceToMove;
@@ -11,23 +11,26 @@ public class CameraController : MonoBehaviour {
 	void Start () {
         player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         lastPlayerPosition = player.transform.position;
-	}
+    }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        
-        distanceToMove = player.transform.position.x - lastPlayerPosition.x;
-
-            transform.position = new Vector3(transform.position.x + distanceToMove, transform.position.y, player.transform.position.z - 20);
-
+        if (!player.isDead)
+        {
+            distanceToMove = player.transform.position.x - lastPlayerPosition.x;
+            transform.position = new Vector3(transform.position.x + distanceToMove, transform.position.y, transform.position.z);
             lastPlayerPosition = player.transform.position;
-     
+        }
+        else
+        {
+            //When the player dies, the offcamera will stop looking for him and stay at the same position. update method will be stoped.
+            this.enabled = false;
+        }
 	}
 
     public void changePlayerAfterDeath()
     {
-        //Old one will be setActive false.
-        player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+
     }
 }

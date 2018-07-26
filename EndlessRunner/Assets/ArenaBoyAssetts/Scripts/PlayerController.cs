@@ -1,16 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
     // Gravity Variables
     public float fallMultiplier = 2.5f;
-   
 
 
+    //Global Data for GameInstances etc
+    public GlobalData globalData;
 
-
+    //dream bubble
+    public GameObject dream;
 
     //Jumping Attributes
     public float maxJumpTime;
@@ -30,6 +33,7 @@ public class PlayerController : MonoBehaviour
     public float slideSpeed;
 
 
+    public Vector3 startPosition;
 
 
     public float lastDistance;
@@ -49,6 +53,7 @@ public class PlayerController : MonoBehaviour
     public Rigidbody2D rb;
 
     public bool isDead;
+    public bool startedRunning = false;
 
     [SerializeField] LayerMask whatIsGround;
 
@@ -63,39 +68,91 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
-        myAnimator = GetComponent<Animator>();
+        myAnimator = GetComponent<Animator>();      
+        startPosition = transform.position;
+        dream = gameObject.transform.Find("dream").gameObject;
+        dream.SetActive(false);
+
+        globalData = GameObject.Find("GlobalData").GetComponent<GlobalData>();
+        
+    }
+
+    private void Start()
+    {
         maxSpeed = playerSpeed;
         maxJumpTime = 1;
-        
-      
-
-
-
+        rb.gravityScale = 1;
+        isDead = false;
+        startedRunning = false;
     }
 
     public void Update()
     {
-        if (!isDead) {
+        if (!isDead && startedRunning) {
             rb.velocity = new Vector2(playerSpeed, rb.velocity.y);
-            // BetterJump();
-
+            // BetterJump();            
             AntiGravJump();
             Slide();
             AnimationControll();
-        }else if (isDead)
+        }
+        if (isDead)
         {
-            rb.velocity = new Vector2(0,0);
-            rb.gravityScale = 0;
-            myAnimator.SetBool("isDead", true);
-
+            kill();
         }
         
     }
 
+    public void kill()
+    {
+        rb.velocity = new Vector2(0, 0);
+        rb.gravityScale = 0;
+        myAnimator.SetBool("isDead", true);
+
+        //this player needs to be tagged dead too, so the second game instance will work with a new player. change back to living when exiting the second game instance and come back to the first
+        this.gameObject.tag = "deadPlayer";
+
+        if (globalData.firstOrSecond == 0)
+        {
+            globalData.openSecondGameInstance();
+        }
+        else
+        {
+            globalData.openFirstGameInstance();
+        }        
+        this.enabled = false;    
+    }
+
+    public void revive()
+    {
+        myAnimator.SetBool("isDead", false);
+        myAnimator.Play("Idle");
+        this.Start();
+        transform.position = startPosition;
+        dream.SetActive(true);
+        this.gameObject.tag = "Player";
+        Camera.main.GetComponent<CameraController>().changePlayerAfterDeath();
+    }
+
+    public void OnEnable()
+    {
+        dream.SetActive(true);
+    }
+
     public void FixedUpdate()
     {
+        startRunning();
         grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround);
       //  Debug.Log(grounded);
+    }
+
+    public void startRunning()
+    {
+        if (Input.GetKeyDown(KeyCode.D)){
+            startedRunning = true;
+
+            dream.SetActive(false);
+
+        }
     }
 
 
