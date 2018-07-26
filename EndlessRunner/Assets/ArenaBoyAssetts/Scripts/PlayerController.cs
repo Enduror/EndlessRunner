@@ -77,6 +77,7 @@ public class PlayerController : MonoBehaviour
         maxJumpTime = 1;
         transform.position = spawnPosition;
         myAnimator.SetBool("isDead", false);
+     
     }
 
     public void Update()
@@ -220,7 +221,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.D))
             {
-            Debug.Log("lauf fotze Lauf!");
+            
             myAnimator.SetBool("isSleeping", false);
         }
     }

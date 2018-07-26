@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class TileManager : MonoBehaviour {
     public GameObject[] tilePrefabs;
-    public List<GameObject> activeTiles;   
+    public List<GameObject> activeTiles;
+    public Animator anim;
 
     private Transform playerTransform;
     private Transform objectSpawnPoint;
@@ -12,9 +13,9 @@ public class TileManager : MonoBehaviour {
     private Vector2 StartStreet;
 
 
-    private float spawnX = 0.0f;
+    private float spawnX =-15f;
     private float tileLenght = 1;
-    private int amountTilesOnScreen =20;
+    private int amountTilesOnScreen = 40;
 
   
 
@@ -22,18 +23,16 @@ public class TileManager : MonoBehaviour {
 	void Start () {       
         activeTiles = new List<GameObject>();       
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-       
+        anim = playerTransform.GetComponent<Animator>();
 
-        for(int i=0; i<20; i++)
-        {           
-            SpawnTile();           
-        }
+
+        InitiateGround();
         
 	}
 	
 	// Update is called once per frame
 	void Update () {        
-		if(playerTransform.position.x  > (spawnX - amountTilesOnScreen * tileLenght)){
+		if ( playerTransform.position.x  > (spawnX - amountTilesOnScreen * tileLenght)){
             SpawnTile();
             DeleteTile();
         }    
@@ -41,12 +40,11 @@ public class TileManager : MonoBehaviour {
 
     public void SpawnTile()
     {
-
         // spawns a TIle
         GameObject go;        
         go = Instantiate(tilePrefabs[0]) as GameObject;      
         go.transform.SetParent(transform);        
-        go.transform.position = new Vector2(-5,-3.9f) + new Vector2(1,0)* spawnX;
+        go.transform.position = new Vector2(-5,-3.75f) + new Vector2(1,0)* spawnX;
         spawnX += tileLenght;
         activeTiles.Add(go);
 
@@ -57,6 +55,18 @@ public class TileManager : MonoBehaviour {
     {
         Destroy(activeTiles[0]);
         activeTiles.RemoveAt(0);
+    }
+
+    public void InitiateGround()
+    {
+        for (int i = 0; i < amountTilesOnScreen; i++)
+        {
+            if (anim.GetBool("isSleeping") == true)
+            {
+                spawnX = -20;
+            }
+            SpawnTile();
+        }
     }
    
 }
