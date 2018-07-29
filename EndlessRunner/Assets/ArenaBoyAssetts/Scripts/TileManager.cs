@@ -20,14 +20,11 @@ public class TileManager : MonoBehaviour {
   
 
 	// Use this for initialization
-	void Start () {       
-        activeTiles = new List<GameObject>();       
+	void Start () {                   
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         anim = playerTransform.GetComponent<Animator>();
 
-
-        InitiateGround();
-        
+        InstantiateGround();        
 	}
 	
 	// Update is called once per frame
@@ -57,8 +54,9 @@ public class TileManager : MonoBehaviour {
         activeTiles.RemoveAt(0);
     }
 
-    public void InitiateGround()
+    public void InstantiateGround()
     {
+        activeTiles = new List<GameObject>();
         for (int i = 0; i < amountTilesOnScreen; i++)
         {
             if (anim.GetBool("isSleeping") == true)

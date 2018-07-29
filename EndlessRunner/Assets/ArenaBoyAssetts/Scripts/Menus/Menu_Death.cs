@@ -16,8 +16,8 @@ public class Menu_Death : MonoBehaviour {
 
     public void RestartGame()
     {
-        GlobalData.playerInstance.isDead = false;
-        GlobalData.playerInstance.enabled = true;
+        GlobalData.Instance.playerInstance.isDead = false;
+        GlobalData.Instance.playerInstance.enabled = true;
         GlobalData.Instance.button_restart.SetActive(false);
         GlobalData.Instance.button_quit.SetActive(false);
     }

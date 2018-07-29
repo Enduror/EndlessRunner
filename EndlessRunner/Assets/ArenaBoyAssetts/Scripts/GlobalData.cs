@@ -35,13 +35,16 @@ public class GlobalData : MonoBehaviour {
     public GameObject button_restart;
     public GameObject button_quit;
 
-    public static PlayerController playerInstance;
+    public PlayerController playerInstance;
+
+    public TileManager tileManager;
 
     void Start()
     {
         playerInstance = FindObjectOfType<PlayerController>();
         button_restart = GameObject.FindWithTag("Button_Restart");
         button_quit = GameObject.FindWithTag("Button_Quit");
+        tileManager = GameObject.FindWithTag("TileManager").GetComponent<TileManager>();
         button_restart.SetActive(false);
         button_quit.SetActive(false);
     }

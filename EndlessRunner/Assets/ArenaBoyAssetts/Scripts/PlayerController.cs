@@ -120,13 +120,14 @@ public class PlayerController : MonoBehaviour
         Debug.Log("zwischen den beiden isDead das Foto machen und animation abwarten");
         ResetPlayer();
         GlobalData.Instance.button_restart.SetActive(true);
-        GlobalData.Instance.button_quit.SetActive(true);    
+        GlobalData.Instance.button_quit.SetActive(true);
     }
 
     public void ResetPlayer()
     {
         setStartValues();
         myAnimator.SetBool("isSleeping", true);
+        GlobalData.Instance.tileManager.InstantiateGround();
     }
 
     public void AntiGravJump()
