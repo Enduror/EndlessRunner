@@ -2865,7 +2865,7 @@ GameObject:
   - component: {fileID: 732630449}
   m_Layer: 16
   m_Name: TileManager
-  m_TagString: Untagged
+  m_TagString: TileManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7850,6 +7850,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button_restart: {fileID: 0}
   button_quit: {fileID: 0}
+  playerInstance: {fileID: 0}
+  tileManager: {fileID: 0}
 --- !u!4 &1975126779
 Transform:
   m_ObjectHideFlags: 0
