@@ -22,8 +22,7 @@ public class ObjectDestroyer : MonoBehaviour {
 	}
 
     private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Debug.Log("Sucka");
+    {        
         if (collision.gameObject.CompareTag("Player"))
         {
             player.isDead = true;
