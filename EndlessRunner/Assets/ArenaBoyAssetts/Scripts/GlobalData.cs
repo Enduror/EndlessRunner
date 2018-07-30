@@ -45,8 +45,8 @@ public class GlobalData : MonoBehaviour {
         button_restart = GameObject.FindWithTag("Button_Restart");
         button_quit = GameObject.FindWithTag("Button_Quit");
         tileManager = GameObject.FindWithTag("TileManager").GetComponent<TileManager>();
-        button_restart.SetActive(false);
-        button_quit.SetActive(false);
+        //button_restart.SetActive(false);
+        //button_quit.SetActive(false);
     }
   
 }
