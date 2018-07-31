@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -7,7 +8,7 @@ public class PlayerController : MonoBehaviour
     //// Gravity Variables
     //public float fallMultiplier = 4f;
 
-
+    public Slider jumpSlider;
 
 
 
@@ -42,12 +43,19 @@ public class PlayerController : MonoBehaviour
     public Transform ceilingCheck;
     float groundRadius = 0.1f;
     float ceilingRadius = 0.1f;
-    
+
+    public int jumpLevel1;
+    public int jumpLevel2;
+    public int jumpLevel3;
+
 
     // Components
     private Collider2D playerCollider;
-    public Animator myAnimator;
+    public Animator myCharacterAnimator;
+    public Animator myCanvasAnimator;
     public Rigidbody2D rb;
+
+    public ParticleSystem perfectEffect;
 
     public bool isDead;
 
@@ -62,7 +70,8 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
-        myAnimator = GetComponent<Animator>();
+        myCharacterAnimator = GetComponent<Animator>();
+        myCanvasAnimator = FindObjectOfType<Canvas>().GetComponent<Animator>();
         //spawnPosition = transform.position;
     }
 
@@ -77,7 +86,7 @@ public class PlayerController : MonoBehaviour
         //maxSpeed = playerSpeed;
         //maxJumpTime = 1;
         //transform.position = spawnPosition;
-        myAnimator.SetBool("isDead", false);
+        myCharacterAnimator.SetBool("isDead", false);
 
         //new Jump
         jumpPressure = 0f;
@@ -90,32 +99,15 @@ public class PlayerController : MonoBehaviour
 
     public void Update()
     {
-        if(!isDead && myAnimator.GetBool("isSleeping") == false && running!= true)
-        {
-            StartCoroutine(MovePlayer());
-            running = true;
-        }
-        if (!isDead && myAnimator.GetBool("isSleeping") == false)
-        {
-          
-            // BetterJump();
-
-            //AntiGravJump();
-            //Slide();
-            Jump();
-            AnimationControll();
 
 
-        }
-        else if (isDead)
-        {
-            Die();
-            this.enabled = false;
-        }
-        else if (myAnimator.GetBool("isSleeping") == true)
-        {
-            WakeUp();
-        }
+       
+        IsDeadChecker();
+        UpdateHealthbar();
+
+
+
+
 
     }
 
@@ -139,26 +131,26 @@ public class PlayerController : MonoBehaviour
 
     public void Jump()
     {
+
+        //Jump Charge
         if (Input.GetKey(KeyCode.W) && rb.velocity.y == 0)
         {
             if(jumpPressure < maxJumpPressure)
             {
-                jumpPressure += Time.deltaTime * 20f;               
 
-                    chargeAnzeige = jumpPressure / maxJumpPressure;
-                    Debug.Log(chargeAnzeige);
-                
+                // sollte exponentiel wachsen
+
+                jumpPressure += Time.deltaTime *10f;               
+                //füllt die Charge anzeige auf!
+                chargeAnzeige = jumpPressure / maxJumpPressure;         
+
             }
             else
             {
-                jumpPressure = maxJumpPressure;
+                jumpPressure = maxJumpPressure;            
+                
             }
-            if (Input.GetKeyUp(KeyCode.W))
-            {
-               
-                chargeAnzeige = jumpPressure / maxJumpPressure;
-                Debug.Log(chargeAnzeige);
-            }
+           
         }
         else
         {
@@ -169,10 +161,49 @@ public class PlayerController : MonoBehaviour
                 {
                     jumpPressure = jumpPressure + minJumpPressure;
 
+                    // vielleicht einfach so für die 3 Stufen? 
+                    if (jumpPressure >= 8)
+                    {
+                        jumpPressure = jumpLevel3;
+                    }
+                    else if (jumpPressure >= 4)
+                    {
+                        jumpPressure = jumpLevel2;
+                    }
+                    else if (jumpPressure > 0)
+                    {
+                        jumpPressure = jumpLevel1;
+                    }
+                    Debug.Log(jumpPressure);
                     rb.AddForce(Vector2.up * jumpPressure, ForceMode2D.Impulse);
                     rb.AddForce(Vector2.right * jumpPressure, ForceMode2D.Impulse);
 
+
+
+
+                    if (chargeAnzeige<=0.2f&& chargeAnzeige >= 0.3f || chargeAnzeige <= 0.6f && chargeAnzeige >= 0.5f|| chargeAnzeige <= 0.8f && chargeAnzeige >= 0.9f)
+                    {
+                        
+                        myCanvasAnimator.SetTrigger("Trigger_Perfect");
+
+                        perfectEffect.Play();
+                       
+                    }
+                    else
+                    {
+
+                        
+                        myCanvasAnimator.SetTrigger("Trigger_Good");
+                        
+                        
+                    }
+
+
+
                     jumpPressure = 0f;
+                    chargeAnzeige = 0f;
+                    
+                    
                 }
             }
           
@@ -202,7 +233,7 @@ public class PlayerController : MonoBehaviour
     public void ResetPlayer()
     {
         SetStartValues();
-        myAnimator.SetBool("isSleeping", true);
+        myCharacterAnimator.SetBool("isSleeping", true);
         GlobalData.Instance.tileManager.InstantiateGround();
     }
 
@@ -258,16 +289,16 @@ public class PlayerController : MonoBehaviour
         //Animation Setters
         if (rb.velocity.y > 0)
         {
-            myAnimator.SetBool("isJumping", true);
+            myCharacterAnimator.SetBool("isJumping", true);
         }
         if (rb.velocity.y < -1)
         {
 
         }
-        if (rb.velocity.y == 0 && myAnimator.GetBool("Sliding") == false)
+        if (rb.velocity.y == 0 && myCharacterAnimator.GetBool("Sliding") == false)
         {
-            myAnimator.SetBool("isJumping", false);
-            playerSpeed += 0.001f;
+            myCharacterAnimator.SetBool("isJumping", false);
+           // playerSpeed += 0.001f;
         }
     }
 
@@ -299,7 +330,52 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
             {
             
-            myAnimator.SetBool("isSleeping", false);
+            myCharacterAnimator.SetBool("isSleeping", false);
+        }
+    }
+
+    public void UpdateHealthbar()
+    {
+        jumpSlider.value = chargeAnzeige;
+        if (Input.GetKeyUp(KeyCode.W))
+        {
+            jumpSlider.value = 0;
+        }
+    }
+
+
+    public void IsDeadChecker()
+    {
+
+        if (transform.position.y <= -50)
+        {
+            isDead = true;
+        }
+        if (!isDead && myCharacterAnimator.GetBool("isSleeping") == false && running != true)
+        {
+            StartCoroutine(MovePlayer());
+            running = true;
+        }
+        if (!isDead && myCharacterAnimator.GetBool("isSleeping") == false)
+        {
+
+            // BetterJump();
+
+            //AntiGravJump();
+            //Slide();
+            Jump();
+            AnimationControll();
+
+
+        }
+        else if (isDead)
+        {
+            Die();
+            this.enabled = false;
+        }
+        else if (myCharacterAnimator.GetBool("isSleeping") == true)
+        {
+            WakeUp();
         }
     }
 
