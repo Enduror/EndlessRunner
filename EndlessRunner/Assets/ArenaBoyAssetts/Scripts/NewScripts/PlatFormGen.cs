@@ -53,7 +53,7 @@ public class PlatFormGen : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(player.transform.position.x+30 >= generator.position.x)
+		if(player.transform.position.x+100 >= generator.position.x)
         {
             SpawnPlatform();
             DeletePlatform();
@@ -74,7 +74,7 @@ public class PlatFormGen : MonoBehaviour {
     }
     public void DeletePlatform()
     {
-        if (activeTiles.Count > 6)
+        if (activeTiles.Count > 10)
         {
             Destroy(activeTiles[0]);
             activeTiles.RemoveAt(0);

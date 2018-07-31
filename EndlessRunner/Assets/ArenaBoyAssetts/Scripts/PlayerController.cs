@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour
     public Transform ceilingCheck;
     float groundRadius = 0.1f;
     float ceilingRadius = 0.1f;
+    
 
     // Components
     private Collider2D playerCollider;
@@ -54,7 +55,7 @@ public class PlayerController : MonoBehaviour
     
     //test
     public float lastTimeGrounded;
-
+    public float chargeAnzeige;
 
     // Use this for initialization
     void Awake()
@@ -142,11 +143,21 @@ public class PlayerController : MonoBehaviour
         {
             if(jumpPressure < maxJumpPressure)
             {
-                jumpPressure += Time.deltaTime * 20f;
+                jumpPressure += Time.deltaTime * 20f;               
+
+                    chargeAnzeige = jumpPressure / maxJumpPressure;
+                    Debug.Log(chargeAnzeige);
+                
             }
             else
             {
                 jumpPressure = maxJumpPressure;
+            }
+            if (Input.GetKeyUp(KeyCode.W))
+            {
+               
+                chargeAnzeige = jumpPressure / maxJumpPressure;
+                Debug.Log(chargeAnzeige);
             }
         }
         else
