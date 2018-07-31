@@ -181,7 +181,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-                    if (chargeAnzeige<=0.2f&& chargeAnzeige >= 0.3f || chargeAnzeige <= 0.6f && chargeAnzeige >= 0.5f|| chargeAnzeige <= 0.8f && chargeAnzeige >= 0.9f)
+                    if (chargeAnzeige>=0.2f&& chargeAnzeige<= 0.3f || chargeAnzeige <= 0.6f && chargeAnzeige >= 0.5f|| chargeAnzeige >= 0.8f && chargeAnzeige <= 0.9f)
                     {
                         
                         myCanvasAnimator.SetTrigger("Trigger_Perfect");
@@ -223,7 +223,7 @@ public class PlayerController : MonoBehaviour
         //myAnimator.SetBool("isDead", true);
         //myAnimator.SetBool("isDead", false);
         Screenshot.captureScreenshot();
-        Debug.Log("zwischen den beiden isDead das Foto machen und animation abwarten");
+      //  Debug.Log("zwischen den beiden isDead das Foto machen und animation abwarten");
         ResetPlayer();
         GlobalData.Instance.button_restart.SetActive(true);
         GlobalData.Instance.button_quit.SetActive(true);
