@@ -174,7 +174,7 @@ public class PlayerController : MonoBehaviour
                     {
                         jumpPressure = jumpLevel1;
                     }
-                    Debug.Log(jumpPressure);
+                    
                     rb.AddForce(Vector2.up * jumpPressure, ForceMode2D.Impulse);
                     rb.AddForce(Vector2.right * jumpPressure, ForceMode2D.Impulse);
 
@@ -225,8 +225,8 @@ public class PlayerController : MonoBehaviour
         Screenshot.captureScreenshot();
       //  Debug.Log("zwischen den beiden isDead das Foto machen und animation abwarten");
         ResetPlayer();
-        GlobalData.Instance.button_restart.SetActive(true);
-        GlobalData.Instance.button_quit.SetActive(true);
+        //GlobalData.Instance.button_restart.SetActive(true);
+        //GlobalData.Instance.button_quit.SetActive(true);
         running = false;
     }
 
@@ -234,7 +234,7 @@ public class PlayerController : MonoBehaviour
     {
         SetStartValues();
         myCharacterAnimator.SetBool("isSleeping", true);
-        GlobalData.Instance.tileManager.InstantiateGround();
+       // GlobalData.Instance.tileManager.InstantiateGround();
     }
 
     //public void AntiGravJump()
