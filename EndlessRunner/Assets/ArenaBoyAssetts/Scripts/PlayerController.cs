@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
 
     public Slider jumpSlider;
 
+    public ParticleSystemSlider particleEffect;
+
 
 
 
@@ -72,6 +74,8 @@ public class PlayerController : MonoBehaviour
         playerCollider = GetComponent<Collider2D>();
         myCharacterAnimator = GetComponent<Animator>();
         myCanvasAnimator = FindObjectOfType<Canvas>().GetComponent<Animator>();
+        particleEffect = FindObjectOfType<ParticleSystemSlider>();
+        
         //spawnPosition = transform.position;
     }
 
@@ -116,7 +120,7 @@ public class PlayerController : MonoBehaviour
         while (!isDead)
         {
             rb.velocity = new Vector2(playerSpeed, rb.velocity.y);
-            playerSpeed++;
+           // playerSpeed++;
             //increase speed every second
             yield return new WaitForSeconds(1);                   
             //Vielleicht bei jedem Schritt ein Addforce? Dann sieht das bisschen mehr nach gas geben aus bzw dynamischer
@@ -179,26 +183,37 @@ public class PlayerController : MonoBehaviour
                     rb.AddForce(Vector2.right * jumpPressure, ForceMode2D.Impulse);
 
 
+                    // Hier ist die Belohnungsanzeige für den perfekten Sprung---------------------------------------------------------------------------------------------
 
-
-                    if (chargeAnzeige>=0.2f&& chargeAnzeige<= 0.3f || chargeAnzeige <= 0.6f && chargeAnzeige >= 0.5f|| chargeAnzeige >= 0.8f && chargeAnzeige <= 0.9f)
+                    if (chargeAnzeige >= 0.2f && chargeAnzeige <= 0.3f)
                     {
-                        
                         myCanvasAnimator.SetTrigger("Trigger_Perfect");
-
+                        particleEffect.ParticleIndex = 1;
                         perfectEffect.Play();
-                       
                     }
-                    else
+                    if (chargeAnzeige <= 0.6f && chargeAnzeige >= 0.5f)
                     {
-
-                        
-                        myCanvasAnimator.SetTrigger("Trigger_Good");
-                        
-                        
+                        myCanvasAnimator.SetTrigger("Trigger_Perfect");
+                        particleEffect.ParticleIndex = 2;
+                        perfectEffect.Play();
+                    }
+                    if (chargeAnzeige >= 0.8f && chargeAnzeige <= 0.9f)
+                    {
+                        particleEffect.ParticleIndex = 3;
+                        myCanvasAnimator.SetTrigger("Trigger_Perfect");
+                        perfectEffect.Play();
                     }
 
-
+                    // wenn kein Perfect dann nur gut
+                    if (!(chargeAnzeige>=0.2f&& chargeAnzeige<= 0.3f || chargeAnzeige <= 0.6f && chargeAnzeige >= 0.5f|| chargeAnzeige >= 0.8f && chargeAnzeige <= 0.9f))
+                    {
+                        myCanvasAnimator.SetTrigger("Trigger_Good");              
+                    }
+                    // wenn irgend ein perfect dann playerspeed++   ( am besten hier playerspeed erhöhen für kurze zeit aber significant)  
+                    if ((chargeAnzeige >= 0.2f && chargeAnzeige <= 0.3f || chargeAnzeige <= 0.6f && chargeAnzeige >= 0.5f || chargeAnzeige >= 0.8f && chargeAnzeige <= 0.9f))
+                    {
+                        playerSpeed++;
+                    }
 
                     jumpPressure = 0f;
                     chargeAnzeige = 0f;

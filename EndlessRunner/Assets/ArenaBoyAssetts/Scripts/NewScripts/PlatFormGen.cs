@@ -26,6 +26,8 @@ public class PlatFormGen : MonoBehaviour {
 
     public bool isLastElemHole;
 
+    public int holeCounter;
+
     public int allowedPlatforms;
 
    
@@ -48,14 +50,9 @@ public class PlatFormGen : MonoBehaviour {
     public GameObject[] tilePrefabs;
     public GameObject lastPrefab;
     public List<GameObject> activeTiles;
-    public List<GameObject> abstand2Tiles;
+ 
 
-
-
-
-
-
-
+    
 
     // Use this for initialization
     void Start()
@@ -64,6 +61,7 @@ public class PlatFormGen : MonoBehaviour {
         playerSpeed = player.GetComponent<PlayerController>().playerSpeed;
         startSpeed = playerSpeed;
         lastPrefab = null;
+        holeCounter = 0;
 
 
         
@@ -84,9 +82,13 @@ public class PlatFormGen : MonoBehaviour {
             SpawnPlatform();
             DeletePlatform();
         }
-        if (Input.GetKeyDown(KeyCode.A))
+
+
+
+        // test Input
+        if (Input.GetKeyDown(KeyCode.T))
         {
-            TestHole();
+           
         }
         
 	}
@@ -94,25 +96,65 @@ public class PlatFormGen : MonoBehaviour {
 
     public void SpawnPlatform()
     {
-                
-        randomNumber = Random.Range(0, tilePrefabs.Length);
+
+        // keine löcher am anfang
+        if (generator.transform.position.x<= 15)
+        {
+            randomNumber = 1;
+        }
+        else
+        {
+            
+            randomNumber = Random.Range(0, tilePrefabs.Length);
+            // 0==hole
+            if (randomNumber == 0)
+            {
+                holeCounter++;
+                Debug.Log(holeCounter);
+            }
+            else
+            {
+                holeCounter = 0;
+            }
+            if (holeCounter > 3)
+            {
+                Debug.Log("4rerLoch verhindert");
+                randomNumber= Random.Range(1, tilePrefabs.Length);
+                Random.Range(0, tilePrefabs.Length);
+            }
+            
+        }       
+        
+           
+        
+        
        
-         
-      
+
+
+
+        // Neues Gameobject wird in der hierarchy erstellt, dem platformHolder zugewiesen und anschließend an die letzte Platform angereiht.
+
 
         GameObject go;
         go = Instantiate(tilePrefabs[randomNumber]) as GameObject;
         go.transform.SetParent(platformHolder);
-        go.transform.position = generator.position;
-        
-       
-      //  abstand = go.GetComponent<BoxCollider2D>().size.x/2 + activeTiles[activeTiles.Count-1].GetComponent<BoxCollider2D>().size.x/2;      
-
-
-        generator.position += new Vector3(AbstandCalculator(go),    ChargeLevel * JumpHight, 0);
         
         activeTiles.Add(go);
-       
+
+        if (activeTiles.Count >=2) {           
+            abstand = (activeTiles[activeTiles.Count - 2].GetComponent<BoxCollider2D>().size.x + activeTiles[activeTiles.Count-1].GetComponent<BoxCollider2D>().size.x) / 2;            
+        }
+        else
+        {
+            abstand =0;
+        }
+        // platform wird immer an die position des generators gepackt
+
+        generator.position += new Vector3(abstand, ChargeLevel * JumpHight, 0);
+        go.transform.position = generator.position;
+
+
+
     }
     public void DeletePlatform()
     {
@@ -122,33 +164,7 @@ public class PlatFormGen : MonoBehaviour {
             activeTiles.RemoveAt(0);
         }
 
-    }
+    }   
 
 
-    public void TestHole()
-    {
-       for(int i = 0; i < abstand2Tiles.Count; i++)
-        {
-            i++;
-            Debug.Log(i);
-        }
-        
-    }
-
-
-    public float AbstandCalculator(GameObject tile)
-    {
-        abstand2Tiles.Add(tile);
-        if (abstand2Tiles.Count>2)
-        {
-            abstand2Tiles.RemoveAt(0);
-            abstand = (abstand2Tiles[0].GetComponent<BoxCollider2D>().size.x + abstand2Tiles[1].GetComponent<BoxCollider2D>().size.x) / 2;
-           
-        }     
-                
-                
-       
-
-        return abstand;
-    }
 }
