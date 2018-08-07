@@ -9,6 +9,11 @@ public class PlayerController : MonoBehaviour
     //public float fallMultiplier = 4f;
 
     public Slider jumpSlider;
+    public Slider comboSlider;
+    public int comboCounter;
+    public Text comboText;
+
+  
 
     public ParticleSystemSlider particleEffect;
 
@@ -50,7 +55,7 @@ public class PlayerController : MonoBehaviour
     public int jumpLevel2;
     public int jumpLevel3;
 
-
+    
     // Components
     private Collider2D playerCollider;
     public Animator myCharacterAnimator;
@@ -67,6 +72,16 @@ public class PlayerController : MonoBehaviour
     public float lastTimeGrounded;
     public float chargeAnzeige;
 
+
+    // Lerp Variablen
+
+
+    float lerpTime = 1f;
+    float currentLerpTime;
+    bool isLerping = false;
+    float currentSpeed;
+
+
     // Use this for initialization
     void Awake()
     {
@@ -75,6 +90,8 @@ public class PlayerController : MonoBehaviour
         myCharacterAnimator = GetComponent<Animator>();
         myCanvasAnimator = FindObjectOfType<Canvas>().GetComponent<Animator>();
         particleEffect = FindObjectOfType<ParticleSystemSlider>();
+
+        
         
         //spawnPosition = transform.position;
     }
@@ -97,6 +114,7 @@ public class PlayerController : MonoBehaviour
         jumpPressure = 0f;
         minJumpPressure = 0.0f;
         maxJumpPressure = 12.0f;
+        comboCounter = 0;
      
     }
 
@@ -109,6 +127,7 @@ public class PlayerController : MonoBehaviour
        
         IsDeadChecker();
         UpdateHealthbar();
+        checkComboBar();
 
 
         // Buttons um leichter den loch abstand ect zu prüfen
@@ -141,8 +160,40 @@ public class PlayerController : MonoBehaviour
     IEnumerator MovePlayer()
     {
         while (!isDead)
-        {
+        {          
+            // Hier würde ich gern lerpen ....--------------------------------------------------------------------------------------
+
+
+            //if (rb.velocity.x != playerSpeed && !isLerping)
+            //{                    
+            //    currentLerpTime++;
+            //    Debug.Log(currentLerpTime);
+            //}
+
+
+            //if (rb.velocity.x != playerSpeed && isLerping)
+            //{
+            //    currentSpeed = rb.velocity.x;
+            //    if (currentLerpTime > lerpTime)
+            //    {
+            //        currentLerpTime = lerpTime;
+            //        isLerping = false;
+            //    }                
+
+            //}
+
+            //float t = currentLerpTime / lerpTime;
+            //t = Mathf.Sin(t * Mathf.PI * 0.5f);
+
+            //rb.velocity = new Vector2(Mathf.Lerp(currentSpeed, playerSpeed, t), rb.velocity.y);----------------------------------------
+                        
+
+
             rb.velocity = new Vector2(playerSpeed, rb.velocity.y);
+
+
+
+
            // playerSpeed++;
             //increase speed every second
             yield return new WaitForSeconds(1);                   
@@ -238,6 +289,8 @@ public class PlayerController : MonoBehaviour
                     if ((chargeAnzeige >= 0.2f && chargeAnzeige <= 0.3f || chargeAnzeige <= 0.6f && chargeAnzeige >= 0.5f || chargeAnzeige >= 0.8f && chargeAnzeige <= 0.9f))
                     {
                         playerSpeed++;
+                        comboCounter++;
+                       
                     }
 
                     jumpPressure = 0f;
@@ -277,51 +330,7 @@ public class PlayerController : MonoBehaviour
        // GlobalData.Instance.tileManager.InstantiateGround();
     }
 
-    //public void AntiGravJump()
-    //{
-    //    //Innitial jumpVelocity 
-    //    if (Input.GetKeyDown(KeyCode.W) && rb.velocity.y == 0)
-    //    {
-    //        currentLerpTime = 0;
-    //        rb.velocity = new Vector2(playerSpeed, 1 * jumpVelocity);
-
-    //    }
-
-
-    //    // Gravity modifiers to float a little longer
-    //    if (Input.GetKey(KeyCode.W))
-    //    {
-
-    //        if (currentLerpTime < maxJumpTime)
-    //        {
-    //            currentLerpTime += Time.deltaTime;
-
-    //        }
-    //        else
-    //        {
-    //            currentLerpTime = maxJumpTime;
-    //        }
-
-    //        // Lerp vom 0 -1 Gravity 
-    //        float t = currentLerpTime / maxJumpTime;
-    //        t = Mathf.Sin(t * Mathf.PI * 0.5f);
-
-
-    //        currentGravity = Mathf.Lerp(0, 3, t);
-    //        rb.gravityScale = currentGravity;
-
-    //    }
-
-    //    // Gravity increase for better fall
-
-    //    if (Input.GetKeyUp(KeyCode.W))
-    //    {
-    //        rb.gravityScale = fallMultiplier;
-
-    //    }
-
-    //}
-
+   
 
 
     public void AnimationControll()
@@ -343,21 +352,6 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    //public void Slide()
-    //{
-    //    if (Input.GetKey(KeyCode.S) && myAnimator.GetBool("isJumping") == false)
-    //    {
-    //        //smoothTime = Mathf.Sqrt(smoothTime * Mathf.PI * 0.5f);
-    //        //playerSpeed = Mathf.Lerp(slideSpeed,maxSpeed, smoothTime * Time.deltaTime);
-    //        myAnimator.SetBool("Sliding", true);
-    //    }
-    //    else
-    //    {
-    //        //playerSpeed = Mathf.Lerp(playerSpeed, maxSpeed, smoothTime * Time.deltaTime);
-    //        myAnimator.SetBool("Sliding", false);
-    //    }
-
-    //}
     public void PlayDeath()
     {
         // hier kommen die todesanimationen rein!
@@ -420,6 +414,90 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void checkComboBar()
+    {
+        comboSlider.value = comboCounter;
+        if (comboCounter>=5){
+            comboText.text = "Press Space";
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                comboCounter = 0;
+                rb.AddForce(Vector2.up * 15, ForceMode2D.Impulse);
+                rb.AddForce(Vector2.right * 50, ForceMode2D.Impulse);
+            }
+        }
+        else
+        {
+            comboText.text = "Combo Bar";
+
+        }
+
+    }
 }
-    
+
+
+
+// Propably dead COde
+
+
+
+//public void Slide()
+//{
+//    if (Input.GetKey(KeyCode.S) && myAnimator.GetBool("isJumping") == false)
+//    {
+//        //smoothTime = Mathf.Sqrt(smoothTime * Mathf.PI * 0.5f);
+//        //playerSpeed = Mathf.Lerp(slideSpeed,maxSpeed, smoothTime * Time.deltaTime);
+//        myAnimator.SetBool("Sliding", true);
+//    }
+//    else
+//    {
+//        //playerSpeed = Mathf.Lerp(playerSpeed, maxSpeed, smoothTime * Time.deltaTime);
+//        myAnimator.SetBool("Sliding", false);
+//    }
+
+//}
+//public void AntiGravJump()
+//{
+//    //Innitial jumpVelocity 
+//    if (Input.GetKeyDown(KeyCode.W) && rb.velocity.y == 0)
+//    {
+//        currentLerpTime = 0;
+//        rb.velocity = new Vector2(playerSpeed, 1 * jumpVelocity);
+
+//    }
+
+
+//    // Gravity modifiers to float a little longer
+//    if (Input.GetKey(KeyCode.W))
+//    {
+
+//        if (currentLerpTime < maxJumpTime)
+//        {
+//            currentLerpTime += Time.deltaTime;
+
+//        }
+//        else
+//        {
+//            currentLerpTime = maxJumpTime;
+//        }
+
+//        // Lerp vom 0 -1 Gravity 
+//        float t = currentLerpTime / maxJumpTime;
+//        t = Mathf.Sin(t * Mathf.PI * 0.5f);
+
+
+//        currentGravity = Mathf.Lerp(0, 3, t);
+//        rb.gravityScale = currentGravity;
+
+//    }
+
+//    // Gravity increase for better fall
+
+//    if (Input.GetKeyUp(KeyCode.W))
+//    {
+//        rb.gravityScale = fallMultiplier;
+
+//    }
+
+//}
 

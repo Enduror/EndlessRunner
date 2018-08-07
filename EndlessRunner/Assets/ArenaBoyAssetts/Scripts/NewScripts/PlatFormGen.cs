@@ -96,7 +96,8 @@ public class PlatFormGen : MonoBehaviour {
 
     public void SpawnPlatform()
     {
-
+        
+       
         // keine löcher am anfang
         if (generator.transform.position.x<= 15)
         {
@@ -105,8 +106,10 @@ public class PlatFormGen : MonoBehaviour {
         else
         {
             
-            randomNumber = Random.Range(0, tilePrefabs.Length);
+            randomNumber = Random.Range(0, 3);
             // 0==hole
+
+           
             if (randomNumber == 0)
             {
                 holeCounter++;                
@@ -118,7 +121,11 @@ public class PlatFormGen : MonoBehaviour {
             if (holeCounter > 3)
             {                
                 randomNumber= Random.Range(1, tilePrefabs.Length);
-                Random.Range(0, tilePrefabs.Length);
+               // Random.Range(0, tilePrefabs.Length);
+            }
+            if (randomNumber > 1)
+            {
+                randomNumber = 1;
             }
             
             
