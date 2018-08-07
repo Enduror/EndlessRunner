@@ -109,19 +109,18 @@ public class PlatFormGen : MonoBehaviour {
             // 0==hole
             if (randomNumber == 0)
             {
-                holeCounter++;
-                Debug.Log(holeCounter);
+                holeCounter++;                
             }
             else
             {
                 holeCounter = 0;
             }
             if (holeCounter > 3)
-            {
-                Debug.Log("4rerLoch verhindert");
+            {                
                 randomNumber= Random.Range(1, tilePrefabs.Length);
                 Random.Range(0, tilePrefabs.Length);
             }
+            
             
         }       
         

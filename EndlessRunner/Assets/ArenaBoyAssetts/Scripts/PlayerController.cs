@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
 
     public ParticleSystemSlider particleEffect;
 
-
+    public GameObject menu_interface;
 
 
     ////Jumping Attributes
@@ -81,6 +81,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        menu_interface.gameObject.SetActive(false);
         SetStartValues();
     }
 
@@ -109,6 +110,28 @@ public class PlayerController : MonoBehaviour
         IsDeadChecker();
         UpdateHealthbar();
 
+
+        // Buttons um leichter den loch abstand ect zu prüfen
+
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            jumpPressure = jumpLevel1;
+            rb.AddForce(Vector2.up * jumpPressure, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.right * jumpPressure, ForceMode2D.Impulse);
+        }
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            jumpPressure = jumpLevel2;
+            rb.AddForce(Vector2.up * jumpPressure, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.right * jumpPressure, ForceMode2D.Impulse);
+        }
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            jumpPressure = jumpLevel3;
+            rb.AddForce(Vector2.up * jumpPressure, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.right * jumpPressure, ForceMode2D.Impulse);
+        }
 
 
 
@@ -178,7 +201,9 @@ public class PlayerController : MonoBehaviour
                     {
                         jumpPressure = jumpLevel1;
                     }
-                    
+
+                   
+
                     rb.AddForce(Vector2.up * jumpPressure, ForceMode2D.Impulse);
                     rb.AddForce(Vector2.right * jumpPressure, ForceMode2D.Impulse);
 
@@ -362,7 +387,7 @@ public class PlayerController : MonoBehaviour
     public void IsDeadChecker()
     {
 
-        if (transform.position.y <= -50)
+        if (transform.position.y <= -30)
         {
             isDead = true;
         }
@@ -387,6 +412,7 @@ public class PlayerController : MonoBehaviour
         {
             Die();
             this.enabled = false;
+            menu_interface.gameObject.SetActive(true);
         }
         else if (myCharacterAnimator.GetBool("isSleeping") == true)
         {
