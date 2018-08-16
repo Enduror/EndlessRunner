@@ -26,6 +26,6 @@ public class Menu_ButtonManager : MonoBehaviour {
         player.isDead = false;
         menu_interface.SetActive(false);
        
-        player.ResetPlayer();
+       
     }
 }

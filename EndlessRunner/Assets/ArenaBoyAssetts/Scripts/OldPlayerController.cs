@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class OldPlayerController : MonoBehaviour
 {
     //// Gravity Variables
     //public float fallMultiplier = 4f;
@@ -12,8 +12,15 @@ public class PlayerController : MonoBehaviour
     public Slider comboSlider;
     public int comboCounter;
     public Text comboText;
+    public Text debugText;
 
-  
+
+    // ---------------------------------------my new Jump Mechanics -------------------------------------// 
+
+    public float playerSpeed;
+    public float maxSpeed;
+    public float currentSpeed;
+
 
     public ParticleSystemSlider particleEffect;
 
@@ -33,8 +40,8 @@ public class PlayerController : MonoBehaviour
 
     ////playerAttributes
     //public float jumpVelocity;
-    public float playerSpeed;
-    //public float maxSpeed;
+    
+   
     //public float slideSpeed;
 
     //Vector3 spawnPosition;
@@ -76,10 +83,10 @@ public class PlayerController : MonoBehaviour
     // Lerp Variablen
 
 
-    float lerpTime = 1f;
+    float lerpTime = 2f;
     float currentLerpTime;
     bool isLerping = false;
-    float currentSpeed;
+   
 
 
     // Use this for initialization
@@ -109,7 +116,7 @@ public class PlayerController : MonoBehaviour
         //maxJumpTime = 1;
         //transform.position = spawnPosition;
         myCharacterAnimator.SetBool("isDead", false);
-
+        currentSpeed = 0;
         //new Jump
         jumpPressure = 0f;
         minJumpPressure = 0.0f;
@@ -124,7 +131,7 @@ public class PlayerController : MonoBehaviour
     {
 
 
-       
+
         IsDeadChecker();
         UpdateHealthbar();
         checkComboBar();
@@ -153,55 +160,118 @@ public class PlayerController : MonoBehaviour
         }
 
 
+        if (!isDead && myCharacterAnimator.GetBool("isSleeping") == false);
+        {
+            
+            currentSpeed = rb.velocity.x;
+            debugText.text = currentSpeed.ToString();
+            if (currentSpeed != playerSpeed && !isLerping)
+            {
+                Debug.Log("StartsLerping");
+                isLerping = true;
+                currentLerpTime = 0;
+            }
+            else if (currentSpeed != playerSpeed && isLerping)
+            {
+                if (currentLerpTime > lerpTime)
+                {
+                    isLerping = false;
+                }
+
+                currentLerpTime++;
+                Debug.Log(currentLerpTime);
+
+                float t = currentLerpTime / lerpTime;
+                t = Mathf.Sin(t * Mathf.PI * 0.4f);
 
 
+                rb.velocity = new Vector2(Mathf.Lerp(currentSpeed, playerSpeed, t), rb.velocity.y);
+                Debug.Log(rb.velocity.x);
+            }
+            if (currentSpeed == playerSpeed)
+            {
+                rb.velocity = new Vector2(currentSpeed, rb.velocity.y);
+            }
+        }
     }
 
-    IEnumerator MovePlayer()
-    {
-        while (!isDead)
-        {          
-            // Hier würde ich gern lerpen ....--------------------------------------------------------------------------------------
+    //IEnumerator MovePlayer()
+    //{
+    //    while (!isDead)
+    //    {
+    //        currentSpeed = rb.velocity.x;
+    //        debugText.text = currentSpeed.ToString();
+    //        if(currentSpeed!= playerSpeed && !isLerping)
+    //        {
+    //            Debug.Log("StartsLerping");
+    //            isLerping = true;
+    //            currentLerpTime = 0;
+    //        }
+    //        else if(currentSpeed != playerSpeed && isLerping)
+    //        {                
+    //            if (currentLerpTime > lerpTime)
+    //            {
+    //                isLerping = false;
+    //            }
+                
+    //            currentLerpTime++;
+    //            Debug.Log(currentLerpTime);
+
+    //            float t= currentLerpTime / lerpTime;
+    //            t = Mathf.Sin(t * Mathf.PI * 0.1f);
 
 
-            //if (rb.velocity.x != playerSpeed && !isLerping)
-            //{                    
-            //    currentLerpTime++;
-            //    Debug.Log(currentLerpTime);
-            //}
-
-
-            //if (rb.velocity.x != playerSpeed && isLerping)
-            //{
-            //    currentSpeed = rb.velocity.x;
-            //    if (currentLerpTime > lerpTime)
-            //    {
-            //        currentLerpTime = lerpTime;
-            //        isLerping = false;
-            //    }                
-
-            //}
-
-            //float t = currentLerpTime / lerpTime;
-            //t = Mathf.Sin(t * Mathf.PI * 0.5f);
-
-            //rb.velocity = new Vector2(Mathf.Lerp(currentSpeed, playerSpeed, t), rb.velocity.y);----------------------------------------
-                        
-
-
-            rb.velocity = new Vector2(playerSpeed, rb.velocity.y);
+    //            rb.velocity = new Vector2(Mathf.Lerp(currentSpeed, playerSpeed, t), rb.velocity.y);
+    //            Debug.Log(rb.velocity.x);
+    //        }
+    //        if (currentSpeed == playerSpeed)
+    //        {
+    //            rb.velocity = new Vector2(currentSpeed, rb.velocity.y);
+    //        }
 
 
 
 
-           // playerSpeed++;
-            //increase speed every second
-            yield return new WaitForSeconds(1);                   
-            //Vielleicht bei jedem Schritt ein Addforce? Dann sieht das bisschen mehr nach gas geben aus bzw dynamischer
-            //rb.AddForce(Vector2.right*playerSpeed, ForceMode2D.Force);
-        }       
 
-    }
+
+    //        //if (rb.velocity.x != playerSpeed && !isLerping)
+    //        //{                    
+    //        //    currentLerpTime++;
+    //        //    Debug.Log(currentLerpTime);
+    //        //}
+
+
+    //        //if (rb.velocity.x != playerSpeed && isLerping)
+    //        //{
+    //        //    currentSpeed = rb.velocity.x;
+    //        //    if (currentLerpTime > lerpTime)
+    //        //    {
+    //        //        currentLerpTime = lerpTime;
+    //        //        isLerping = false;
+    //        //    }                
+
+    //        //}
+
+    //        //float t = currentLerpTime / lerpTime;
+    //        //t = Mathf.Sin(t * Mathf.PI * 0.5f);
+
+    //        //rb.velocity = new Vector2(Mathf.Lerp(currentSpeed, playerSpeed, t), rb.velocity.y);----------------------------------------
+
+
+
+           
+
+
+
+
+    //       // playerSpeed++;
+    //        //increase speed every second
+    //        yield return new WaitForSeconds(0.1f);                   
+    //        //Vielleicht bei jedem Schritt ein Addforce? Dann sieht das bisschen mehr nach gas geben aus bzw dynamischer
+    //        //rb.AddForce(Vector2.right*playerSpeed, ForceMode2D.Force);
+    //    }       
+
+    //}
 
     [SerializeField] float jumpPressure;
     [SerializeField] float minJumpPressure;
@@ -213,6 +283,7 @@ public class PlayerController : MonoBehaviour
         //Jump Charge
         if (Input.GetKey(KeyCode.W) && rb.velocity.y == 0)
         {
+            myCharacterAnimator.SetBool("isCharging", true);
             if(jumpPressure < maxJumpPressure)
             {
 
@@ -234,6 +305,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKeyUp(KeyCode.W))
             {
+                myCharacterAnimator.SetBool("isCharging", false);
                 //actual jump
                 if (jumpPressure > 0f)
                 {
@@ -387,7 +459,7 @@ public class PlayerController : MonoBehaviour
         }
         if (!isDead && myCharacterAnimator.GetBool("isSleeping") == false && running != true)
         {
-            StartCoroutine(MovePlayer());
+           // StartCoroutine(MovePlayer());
             running = true;
         }
         if (!isDead && myCharacterAnimator.GetBool("isSleeping") == false)
