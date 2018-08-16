@@ -99,7 +99,7 @@ public class PlatFormGen : MonoBehaviour {
         
        
         // keine löcher am anfang
-        if (generator.transform.position.x<= 15)
+        if (generator.transform.position.x<= 50)
         {
             randomNumber = 1;
         }

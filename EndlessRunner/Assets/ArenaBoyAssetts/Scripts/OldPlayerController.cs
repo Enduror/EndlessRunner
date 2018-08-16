@@ -387,7 +387,7 @@ public class OldPlayerController : MonoBehaviour
         rb.gravityScale = 0;
         //myAnimator.SetBool("isDead", true);
         //myAnimator.SetBool("isDead", false);
-        Screenshot.captureScreenshot();
+      //  Screenshot.captureScreenshot();
       //  Debug.Log("zwischen den beiden isDead das Foto machen und animation abwarten");
         ResetPlayer();
         //GlobalData.Instance.button_restart.SetActive(true);
