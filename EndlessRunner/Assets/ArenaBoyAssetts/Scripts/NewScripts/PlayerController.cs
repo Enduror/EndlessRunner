@@ -201,7 +201,7 @@ public class PlayerController : MonoBehaviour
         //maxJumpTime = 1;
         //transform.position = spawnPosition;
        // anim_character.SetBool("isDead", false);
-        playerSpeed = 10;
+        playerSpeed = 1;
         //new Jump
         jumpPressure = 0f;
         minJumpPressure = 0.0f;
